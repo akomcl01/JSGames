@@ -1,0 +1,142 @@
+{% extends "bootstrap/base.html" %}
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet"
+     href="{{url_for('.static', filename='master.css')}}">
+{% endblock %}
+
+
+{% block content %}
+
+
+<nav class="navbar navbar-inverse navbar-static-top">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/home">GameHub</a>
+		
+    </div>
+
+
+{% if current_user.is_authenticated %}
+
+    <div id="navbar" class="navbar-collapse collapse">
+      <form class="navbar-form navbar-right">
+        <div class="form-group">
+          <h3>Welcome, {{ current_user.id }}!</h3>
+        </div>
+        <button type="button" class="btn btn-info" onclick=window.location.href='/logout'>Log Out</button>
+        <button type="button" class="btn btn-danger" onclick=window.location.href='/deleteAccount'>Delete Account</button>
+		<button type="button" class="btn btn-warning" onclick=window.location.href='/changePass'>change Password</button>
+      </form>
+    </div><!--/.navbar-collapse -->
+{% else %}
+
+<div id="navbar" class="navbar-collapse collapse">
+  <form action='/login' method='POST' class="navbar-form navbar-right">
+  <div class="form-group">
+      {{ form.csrf_token }}
+      {{ form.username (class_="form-control") }}
+      {{ form.password (class_="form-control") }}
+  </div>
+    <button type="submit" class="btn btn-info" value=Login>Sign in</button>
+    <!--<input type=hidden value="{{ next or '' }}" name=next>-->
+  </form>
+  <div class="navbar-form navbar-right">
+  <button type="submit" class="btn btn-primary" onclick=window.location.href='/register'>Register</button>
+</div>
+</div>
+{% if form.errors %}
+  <ul class="errors">
+      {% for field_name, field_errors in form.errors|dictsort if field_errors %}
+        {% for error in field_errors %}
+          <li>{{ form[field_name].label }}: {{ error }}</li>
+        {% endfor %}
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endif %}
+
+</div>
+</nav>
+
+<section>
+<div class = "greet rounded">
+  <h1 class="text-center">Welcome</h1>
+  <p class="text-center">Sign Up to track your score, or just play anonymously!</p>
+</div>
+  <div class="row">
+<div class="col-md-4">
+  <a href="/flappypong"><img class="img-rounded" src="static/images/flappy_edit.png" alt=""></a>
+</div>
+<div class="col-md-4">
+  <a href="/lander"><img class="img-rounded" src="static/images/Lander-Logo-edit.jpg" alt=""></a>
+</div>
+<div class="col-md-4">
+<a href="/pacman"><img class="img-rounded"  src="static/images/Pacman-final.png" alt=""></a>
+</div>
+</div>
+
+
+<div class="row2">
+  <div class="col-md-4">
+  <a href="/gravitygolf"><img class="img-rounded"  src="static/images/gravity_golf.png" alt=""></a>
+  </div>
+  <div class="col-md-4">
+  <a href="/fifteen"><img class="img-rounded"  src="static/images/Fifteen.png" alt=""></a>
+</div>
+</div>
+</section>
+<style>
+li {
+  text-align: right;
+  list-style: none;
+  color: red;
+}
+
+h3 {
+	color: white;
+}
+
+.row {
+    margin-left: 8%;
+}
+
+.row2 {
+	margin-left: 25%;
+}
+
+.col-md-4 {
+	padding: 10px;
+}
+
+body {
+	background-image: url("static/images/background.jpg");
+}
+
+.text-center {
+	color: white;
+}
+
+.greet {
+	background-color: black;
+    width: 40em;
+    border-style: solid;
+	border-color: #de3535;
+	border-radius: 10px;
+    padding: 15px;
+	margin: 0 auto;
+}
+</style>
+
+
+
+
+
+{% endblock %}

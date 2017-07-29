@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+    <title>Fifteen Puzzle</title>
+	<link rel="stylesheet" href="static/javascript/fifteen/15.css" type="text/css">
+</head>
+<body>
+	<h1>Fifteen Puzzle</h1>
+	<label for="num_moves">Number of moves:</label>
+	<input type="number" id="num_moves" value="0" readonly>
+
+	<form name="buttons" id="buttons">
+		<button type="button" style="margin:5px 0px 5px 25px" 
+			onclick="javascript:create_game();">New Game</button>
+	</form>
+	<div class='container'>
+<table class = "scores">
+<tr>
+	<thead>
+	<th>Username</th>
+	<th>Score</th>
+	</thead>
+</tr>
+<tbody id = "scores">
+</tbody>
+</table>
+<table class = "scores">
+<tr>
+	<thead>
+	<th>Personal Scores</th>
+	</thead>
+</tr>
+<tbody id = "p_scores">
+</tbody>
+</table>
+	<canvas id="myCanvas" width="501" height="501" onclick="javascript:click_listen();"></canvas>
+	
+</div>
+	<script src="static/javascript/fifteen/15.js"></script>
+	<script type=text/javascript src="static/javascript/jquery-3.2.1.min.js"></script>
+	<script>
+	$.ajax({
+            url: '/fifteen',
+            data: JSON.stringify("get"),
+            type: 'POST',
+			contentType: 'application/json;charset=UTF-8',
+            success: function(response) {
+				console.log(response)
+				$('#scores tr').remove();
+				for (table in response){
+				var lst = []
+				for (var score in response[table]) {
+    			lst.push([score, response[table][score]]);
+				}
+				lst.sort(function(a, b){
+					return b[1] - a[1];
+				});
+				var id = (table == "global_top" ? "scores" : "p_scores")
+				var table = document.getElementById(id);
+				console.log(lst[0]);
+				
+				if (id == "p_scores"){
+					if (lst[0][1] == "Anonymous user"){
+					var row = table.insertRow(0);
+    				var cell1 = row.insertCell(0);
+					cell1.innerHTML = "Anonymous user"
+					} else {
+						for (var i = 0; i < lst.length; i++) {
+    					var row = table.insertRow(0);
+    					var cell1 = row.insertCell(0);
+    					cell1.innerHTML = lst[i][1];
+				}
+						}
+				} else {
+			for (var i = 0; i < lst.length; i++) {
+    			var row = table.insertRow(0);
+    			var cell1 = row.insertCell(0);
+    			var cell2 = row.insertCell(1);
+    			cell1.innerHTML = lst[i][0];
+    			cell2.innerHTML = lst[i][1];
+				}
+				}
+				}
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+	</script>
+</body>
+<style>
+
+
+table, th, td {
+    border: 1px solid black;
+	text-align: center;
+	font-size: 95%;
+	margin-left: 2%;
+}
+
+canvas {
+				box-shadow: 0 0 20px lightgray;
+				padding-left: 0;
+    			padding-right: 0;
+    			margin-left: 10%;
+    			margin-right: auto;
+    			display: block;
+			}
+.container {
+	display: flex;
+}
+</style>
+</html>
